@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Epilepsy: Beyond the Myths</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* One committed world: deep navy ground, amber marks myths and warnings, sky marks facts. Single column, sections in reading order. */
+  --ground: #12264A;
+  --panel: #1B3561;
+  --line: #2E4A78;
+  --ink: #FFFFFF;
+  --muted: #C9D6EA;
+  --amber: #F5A623;
+  --sky: #8FD3FF;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { background: var(--ground); }
+body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 20px; line-height: 1.55; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.08; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(44px, 7vw, 84px); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: clamp(34px, 4.6vw, 52px); font-weight: 800; letter-spacing: -0.01em; }
+h3 { font-size: 26px; font-weight: 600; }
+p { margin: 0; }
+a { color: var(--sky); }
+a:hover { color: var(--ink); }
+:focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
+
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+section { padding: 72px 0; border-top: 1px solid var(--line); }
+.stack { display: flex; flex-direction: column; gap: 20px; }
+.eyebrow { font-weight: 700; font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sky); }
+.lead { font-size: 23px; color: var(--muted); max-width: 62ch; }
+.tag { display: inline-block; align-self: flex-start; font-weight: 700; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; padding: 6px 12px; border-radius: 8px; }
+.tag.myth { background: var(--amber); color: var(--ground); }
+.tag.fact { background: var(--sky); color: var(--ground); }
+.tag.cause { background: transparent; color: var(--muted); border: 1.5px solid var(--line); }
+
+/* Hero */
+.hero { padding: 56px 0 72px; border-top: 0; }
+.hero-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 40px; }
+.hero-top .eyebrow { color: var(--muted); }
+.hero h1 em { font-style: normal; color: var(--amber); }
+.stat-line { font-size: 24px; max-width: 60ch; }
+.stat-line strong { color: var(--amber); }
+.video-box { margin-top: 12px; border-radius: 18px; overflow: hidden; background: #0C1B36; border: 1px solid var(--line); }
+.video-box video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #0C1B36; }
+.video-note { font-size: 16px; color: var(--muted); }
+.jump { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Buttons */
+.btn { font: inherit; font-weight: 700; font-size: 18px; cursor: pointer; border-radius: 12px; padding: 12px 20px; min-height: 48px; border: 2px solid var(--sky); background: transparent; color: var(--sky); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.btn:hover { background: var(--sky); color: var(--ground); }
+.btn.primary { background: var(--amber); border-color: var(--amber); color: var(--ground); }
+.btn.primary:hover { background: #FFC15A; border-color: #FFC15A; }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+
+/* Quiz */
+.quiz { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
+.q { background: var(--panel); border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; }
+.q-head { display: flex; gap: 14px; align-items: baseline; }
+.q-num { font-family: var(--display); font-weight: 800; color: var(--sky); font-size: 22px; font-variant-numeric: tabular-nums; }
+.q-text { font-size: 21px; font-weight: 700; }
+.choices { display: flex; gap: 10px; flex-wrap: wrap; }
+.choice { font: inherit; font-weight: 700; font-size: 18px; min-height: 48px; min-width: 112px; padding: 10px 18px; border-radius: 12px; cursor: pointer; background: transparent; color: var(--ink); border: 2px solid var(--line); }
+.choice:hover { border-color: var(--sky); }
+.choice[aria-pressed="true"] { background: var(--sky); color: var(--ground); border-color: var(--sky); }
+.choice.correct { background: var(--sky); color: var(--ground); border-color: var(--sky); }
+.choice.wrong { border-color: var(--amber); color: var(--amber); background: transparent; }
+.explain { font-size: 18px; color: var(--muted); border-left: 3px solid var(--sky); padding-left: 14px; }
+.result { background: #0C1B36; border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+.result .big { font-family: var(--display); font-weight: 800; font-size: 56px; line-height: 1; color: var(--amber); font-variant-numeric: tabular-nums; }
+.result p { max-width: 52ch; }
+
+/* Myth cards */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; margin-top: 12px; }
+.card { font: inherit; color: inherit; text-align: left; cursor: pointer; background: var(--panel); border: 2px solid transparent; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 14px; min-height: 300px; transition: border-color 0.2s ease, background 0.2s ease; }
+.card:hover { border-color: var(--line); }
+.card[aria-expanded="true"] { background: #0F2F55; border-color: var(--sky); }
+.card .myth-text { font-family: var(--display); font-weight: 600; font-size: 26px; line-height: 1.2; }
+.card .hint { margin-top: auto; font-size: 16px; font-weight: 700; color: var(--sky); }
+.card .back { display: flex; flex-direction: column; gap: 10px; }
+.card .back p { font-size: 18px; }
+.card .back .reality { font-size: 20px; font-weight: 700; color: var(--ink); }
+.card .back .cause-text { color: var(--muted); }
+.card [hidden] { display: none; }
+.cards-tools { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Why it matters */
+.matters { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-top: 8px; }
+.figure { background: var(--panel); border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 8px; }
+.figure .num { font-family: var(--display); font-weight: 800; font-size: 64px; line-height: 1; color: var(--amber); font-variant-numeric: tabular-nums; }
+.figure .src { font-size: 15px; color: var(--muted); margin-top: auto; }
+
+/* First aid */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-top: 8px; }
+.step { background: var(--panel); border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 12px; }
+.step .icon { width: 64px; height: 64px; border-radius: 50%; background: #0C1B36; display: flex; align-items: center; justify-content: center; }
+.step h3 { font-family: var(--display); font-weight: 800; font-size: 40px; color: var(--amber); letter-spacing: 0.02em; }
+.warn { margin-top: 18px; background: var(--amber); color: var(--ground); border-radius: 18px; padding: 22px 26px; display: flex; flex-direction: column; gap: 6px; }
+.warn strong { font-family: var(--display); font-size: 28px; }
+.warn p { font-weight: 700; }
+.extra { margin-top: 10px; color: var(--muted); font-size: 18px; }
+
+/* Footer */
+footer { border-top: 1px solid var(--line); padding: 56px 0 72px; }
+.foot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+.refs { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 10px; font-size: 16px; color: var(--muted); }
+.team { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.member { background: var(--panel); border-radius: 12px; padding: 14px 16px; }
+.member strong { display: block; }
+.member span { font-size: 15px; color: var(--muted); }
+.fine { margin-top: 36px; font-size: 15px; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+@media (max-width: 420px) {
+  body { font-size: 18px; }
+  section { padding: 56px 0; }
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap stack">
+    <div class="hero-top">
+      <span class="eyebrow">Breaking Barriers Hackathon · Team A</span>
+      <span class="eyebrow">Myth-versus-fact portal</span>
+    </div>
+    <h1>Epilepsy: Beyond the <em>Myths</em></h1>
+    <p class="stat-line">About <strong>50 million people</strong> worldwide live with epilepsy, one of the most common brain conditions. Yet myths still shape how they are treated at school, at work and at home.</p>
+    <div class="video-box">
+      <video controls playsinline preload="metadata" poster="poster.jpg" aria-label="One-minute video: Epilepsy, Beyond the Myths">
+        <source src="beyond-the-myths.mp4" type="video/mp4">
+      </video>
+    </div>
+    <p class="video-note">One-minute video. All text is on screen; the video contains no flashing or flickering images.</p>
+    <div class="jump">
+      <a class="btn primary" href="#check-before">Take the 3-question check</a>
+      <a class="btn" href="#myths">Go to the myths</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section id="check-before">
+  <div class="wrap stack">
+    <span class="eyebrow">Step 1 of 4 · Before you read</span>
+    <h2>What do you believe right now?</h2>
+    <p class="lead">Answer three quick questions before you read anything. We'll ask again at the end, so you can see what changed.</p>
+    <div class="quiz" id="quiz-before"></div>
+    <div id="before-result" class="result" hidden>
+      <span class="big" id="before-score">0/3</span>
+      <p>Your first answers are saved for this visit. Read on, then take the same check at the end.</p>
+    </div>
+  </div>
+</section>
+
+<section id="myths">
+  <div class="wrap stack">
+    <span class="eyebrow">Step 2 of 4 · Myth vs fact</span>
+    <h2>Six myths, where they come from, and what is real</h2>
+    <p class="lead">Tap a card to turn it over. Each one shows the myth, the root cause behind it, and the reality.</p>
+    <div class="cards-tools">
+      <button class="btn" type="button" id="show-all">Turn all cards over</button>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="wrap stack">
+    <span class="eyebrow">Why it matters</span>
+    <h2>Stigma can hurt more than seizures</h2>
+    <div class="matters">
+      <div class="figure">
+        <span class="num">70%</span>
+        <p>of people with epilepsy could live seizure-free if properly diagnosed and treated.</p>
+        <span class="src">World Health Organization</span>
+      </div>
+      <div class="figure">
+        <span class="num">75%</span>
+        <p>of people surveyed in Tbilisi said they would not let their child marry a person with epilepsy.</p>
+        <span class="src">Gzirishvili et al., Epilepsy &amp; Behavior, 2013</span>
+      </div>
+      <div class="figure">
+        <span class="num">10 yrs</span>
+        <p>of awareness campaigns later, a repeat survey found significantly less stigma. Awareness works.</p>
+        <span class="src">Kasradze et al., Epilepsy &amp; Behavior, 2025</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="first-aid">
+  <div class="wrap stack">
+    <span class="eyebrow">Step 3 of 4 · What you can do</span>
+    <h2>Seizure first aid: Stay. Safe. Side.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#8FD3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15.5 14"></polyline></svg></div>
+        <h3>Stay</h3>
+        <p>Stay calm and stay with the person until they are fully awake and alert. Time the seizure.</p>
+      </div>
+      <div class="step">
+        <div class="icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#8FD3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"></path></svg></div>
+        <h3>Safe</h3>
+        <p>Move hard or sharp objects away and cushion the head. Never hold the person down.</p>
+      </div>
+      <div class="step">
+        <div class="icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#8FD3FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"></path><polyline points="20 4 20 9 15 9"></polyline></svg></div>
+        <h3>Side</h3>
+        <p>If they are not awake and aware, turn them gently onto their side so they can breathe.</p>
+      </div>
+    </div>
+    <div class="warn" role="note">
+      <strong>Never put anything in their mouth.</strong>
+      <p>Seizure lasting more than 5 minutes? Call emergency services: 112 in Georgia, 911 in the USA.</p>
+    </div>
+    <p class="extra">Source: Epilepsy Foundation, Seizure First Aid.</p>
+  </div>
+</section>
+
+<section id="check-after">
+  <div class="wrap stack">
+    <span class="eyebrow">Step 4 of 4 · After you read</span>
+    <h2>Take the same check again</h2>
+    <p class="lead">Same three questions. This time you'll see the answers and how your score changed.</p>
+    <div class="quiz" id="quiz-after"></div>
+    <div id="after-result" class="result" hidden aria-live="polite">
+      <span class="big" id="change">0/3 → 0/3</span>
+      <p id="after-text"></p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="stack">
+        <h3>References</h3>
+        <ol class="refs">
+          <li>World Health Organization. Epilepsy fact sheet.</li>
+          <li>Epilepsy Foundation. Seizure First Aid: Stay, Safe, Side.</li>
+          <li>Gzirishvili N, et al. Knowledge, attitudes, and stigma towards epilepsy in different walks of life: a study in Georgia. Epilepsy Behav. 2013;27(2):315–8.</li>
+          <li>Kasradze S, et al. Revisiting knowledge, attitudes and perceptions towards epilepsy after a decade of interventions: the case of Tbilisi, Georgia. Epilepsy Behav. 2025;162:110166.</li>
+          <li>Khandaker M, et al. Using Instagram to address epilepsy-related stigma among youth. BCPHR. 2026;(94).</li>
+          <li>Lumsdon J, et al. Exploring the use of art interventions in challenging stigmas related to neurological disorders: a scoping review. PLoS One. 2026;21(3):e0328317.</li>
+        </ol>
+      </div>
+      <div class="stack">
+        <h3>Team A</h3>
+        <div class="team">
+          <div class="member"><strong>Elene Kapanadze</strong><span>Petre Shotadze Tbilisi Medical Academy</span></div>
+          <div class="member"><strong>Anya Umlauf</strong><span>Old Dominion University</span></div>
+          <div class="member"><strong>Bernie Musto</strong><span>Campbell University</span></div>
+          <div class="member"><strong>Bailey Franci</strong><span>Campbell University</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="fine">Breaking Barriers: Reimagining Epilepsy Without Stigma Hackathon, Old Dominion University, November 2026. Prototype for review by the organizers; not for public distribution.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var QUESTIONS = [
+    { text: "During a seizure, you should put something in the person's mouth so they don't swallow their tongue.", answer: false,
+      why: "False. Nobody can swallow their tongue during a seizure. Objects in the mouth can break teeth or block breathing." },
+    { text: "Epilepsy is a mental illness.", answer: false,
+      why: "False. Epilepsy is a neurological brain condition caused by sudden bursts of electrical activity in the brain." },
+    { text: "Up to 70% of people with epilepsy can become seizure-free with the right treatment.", answer: true,
+      why: "True. According to the WHO, up to 70% could live seizure-free if properly diagnosed and treated." }
+  ];
+
+  var MYTHS = [
+    { myth: "A person having a seizure can swallow their tongue.",
+      cause: "Little public knowledge of seizure first aid; the myth spreads through films and word of mouth.",
+      reality: "It is physically impossible. Putting objects in the mouth is what causes harm: broken teeth or blocked breathing." },
+    { myth: "You should hold the person down during a seizure.",
+      cause: "Fear of what a seizure looks like and very little first-aid training.",
+      reality: "Holding someone down can injure them. Clear the space, cushion the head, time the seizure and let it run its course." },
+    { myth: "Epilepsy is a mental illness.",
+      cause: "Confusion between neurological and psychiatric conditions, and old historical beliefs.",
+      reality: "Epilepsy is a neurological condition: sudden bursts of electrical activity in the brain." },
+    { myth: "Epilepsy is contagious.",
+      cause: "Little scientific understanding and long-standing traditional myths.",
+      reality: "You cannot catch epilepsy. Causes include genetics, brain injury, stroke, infection and tumours; in about half of cases the cause is unknown." },
+    { myth: "Epilepsy is caused by a curse, possession or supernatural forces.",
+      cause: "Cultural and religious misconceptions passed down in some communities.",
+      reality: "Epilepsy is a medical condition of the brain, and it is treatable: up to 70% of people can become seizure-free." },
+    { myth: "People with epilepsy can't study, work, marry or have a family.",
+      cause: "Low expectations, overprotective families and social prejudice.",
+      reality: "With the right care, people with epilepsy study, work, marry and raise children. The barrier is stigma, not ability." }
+  ];
+
+  var before = [null, null, null];
+  var after = [null, null, null];
+  var beforeLocked = false;
+
+  function el(tag, attrs, text) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function score(arr) {
+    return arr.reduce(function (s, v, i) { return s + (v === QUESTIONS[i].answer ? 1 : 0); }, 0);
+  }
+
+  function buildQuiz(rootId, store, phase) {
+    var root = document.getElementById(rootId);
+    QUESTIONS.forEach(function (q, i) {
+      var box = el("div", { "class": "q", role: "group", "aria-labelledby": rootId + "-q" + i });
+      var head = el("div", { "class": "q-head" });
+      head.appendChild(el("span", { "class": "q-num" }, String(i + 1)));
+      head.appendChild(el("p", { "class": "q-text", id: rootId + "-q" + i }, q.text));
+      box.appendChild(head);
+      var ch = el("div", { "class": "choices" });
+      [true, false].forEach(function (val) {
+        var b = el("button", { type: "button", "class": "choice", id: rootId + "-q" + i + "-" + val, "aria-pressed": "false" }, val ? "True" : "False");
+        b.addEventListener("click", function () {
+          if (phase === "before" && beforeLocked) return;
+          if (phase === "after" && store[i] !== null) return;
+          store[i] = val;
+          Array.prototype.forEach.call(ch.children, function (c) { c.setAttribute("aria-pressed", c === b ? "true" : "false"); });
+          if (phase === "before") onBefore(); else onAfter(i, box, ch);
+        });
+        ch.appendChild(b);
+      });
+      box.appendChild(ch);
+      root.appendChild(box);
+    });
+  }
+
+  function onBefore() {
+    if (before.indexOf(null) !== -1) return;
+    beforeLocked = true;
+    document.getElementById("before-score").textContent = score(before) + "/3";
+    document.getElementById("before-result").hidden = false;
+    Array.prototype.forEach.call(document.querySelectorAll("#quiz-before .choice"), function (c) { c.disabled = true; });
+  }
+
+  function onAfter(i, box, ch) {
+    var q = QUESTIONS[i];
+    Array.prototype.forEach.call(ch.children, function (c) {
+      var val = c.textContent === "True";
+      c.disabled = true;
+      if (val === q.answer) c.classList.add("correct");
+      else if (val === after[i]) c.classList.add("wrong");
+    });
+    box.appendChild(el("p", { "class": "explain" }, q.why));
+    if (after.indexOf(null) !== -1) return;
+    var a = score(after);
+    var res = document.getElementById("after-result");
+    var change = document.getElementById("change");
+    var text = document.getElementById("after-text");
+    if (before.indexOf(null) === -1) {
+      var b = score(before);
+      change.textContent = b + "/3 → " + a + "/3";
+      text.textContent = a > b ? "Your knowledge went up. Share what you learned: Stay, Safe, Side, and never anything in the mouth."
+        : a === 3 ? "Full marks both times. Now help someone else get there."
+        : "Look back at the myth cards for the ones you missed.";
+    } else {
+      change.textContent = a + "/3";
+      text.textContent = "You skipped the first check. Your score now is " + a + " out of 3.";
+    }
+    res.hidden = false;
+  }
+
+  function buildCards() {
+    var root = document.getElementById("cards");
+    MYTHS.forEach(function (m, i) {
+      var card = el("button", { type: "button", "class": "card", "aria-expanded": "false", id: "card-" + i });
+      var front = el("div", { "class": "stack front" });
+      front.style.gap = "14px";
+      front.appendChild(el("span", { "class": "tag myth" }, "Myth"));
+      front.appendChild(el("p", { "class": "myth-text" }, "“" + m.myth + "”"));
+      var back = el("div", { "class": "back" });
+      back.hidden = true;
+      back.appendChild(el("span", { "class": "tag cause" }, "Root cause"));
+      back.appendChild(el("p", { "class": "cause-text" }, m.cause));
+      back.appendChild(el("span", { "class": "tag fact" }, "Reality"));
+      back.appendChild(el("p", { "class": "reality" }, m.reality));
+      var hint = el("span", { "class": "hint" }, "Tap to see the reality");
+      card.appendChild(front); card.appendChild(back); card.appendChild(hint);
+      card.addEventListener("click", function () { setCard(card, card.getAttribute("aria-expanded") !== "true"); });
+      root.appendChild(card);
+    });
+  }
+  function setCard(card, open) {
+    card.setAttribute("aria-expanded", open ? "true" : "false");
+    card.querySelector(".front .myth-text").style.fontSize = open ? "20px" : "";
+    card.querySelector(".back").hidden = !open;
+    card.querySelector(".hint").textContent = open ? "Tap to see the myth only" : "Tap to see the reality";
+  }
+
+  buildQuiz("quiz-before", before, "before");
+  buildQuiz("quiz-after", after, "after");
+  buildCards();
+
+  var allOpen = false;
+  document.getElementById("show-all").addEventListener("click", function () {
+    allOpen = !allOpen;
+    Array.prototype.forEach.call(document.querySelectorAll(".card"), function (c) { setCard(c, allOpen); });
+    this.textContent = allOpen ? "Turn all cards back" : "Turn all cards over";
+  });
+})();
+</script>
+</body>
+</html>
